@@ -1,56 +1,43 @@
-package com.hitthecythdaddy;
-
-import net.runelite.api.Client;
-import net.runelite.api.events.GameTick;
-import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.ui.overlay.OverlayPanel;
+package com.hitthedaddy;
 
 import javax.inject.Inject;
-import java.awt.*;
+import net.runelite.api.Client;
+import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.OverlayPriority;
 
-public class hitthedaddyoverlay extends OverlayPanel
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+
+public class HitTheDaddyOverlay extends Overlay
 {
     private final Client client;
-    private final hitthedaddyplugin plugin;
-    private boolean shouldShow;
+    private boolean enabled = false;
 
     @Inject
-    public hitthedaddyoverlay(Client client, hitthedaddyplugin plugin)
+    public HitTheDaddyOverlay(Client client)
     {
-        super(plugin);
         this.client = client;
-        this.plugin = plugin;
+        setPosition(OverlayPosition.DYNAMIC);
+        setLayer(OverlayLayer.ABOVE_WIDGETS);
+        setPriority(OverlayPriority.HIGH);
     }
 
-    public void start()
+    public void setEnabled(boolean enabled)
     {
-        shouldShow = true;
-    }
-
-    public void stop()
-    {
-        shouldShow = false;
-    }
-
-    @Subscribe
-    public void onGameTick(GameTick event)
-    {
-        // Example logic for when to display something
-        if (shouldShow && client.getLocalPlayer() != null)
-        {
-            panelComponent.getChildren().clear();
-            panelComponent.getChildren().addTitleComponent("Spank the Monkey");
-            panelComponent.setPreferredSize(new Dimension(150, 30));
-        }
+        this.enabled = enabled;
     }
 
     @Override
     public Dimension render(Graphics2D graphics)
     {
-        if (!shouldShow)
+        if (!enabled)
         {
             return null;
         }
-        return super.render(graphics);
+
+        graphics.drawString("SPANK THE MONKEY!", 100, 100);
+        return null;
     }
 }
